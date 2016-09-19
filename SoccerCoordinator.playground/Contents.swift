@@ -27,36 +27,30 @@ var players = [
 
 // Team collection
 
-var teams = [
-    "Dragons": [[:]],
-    "Sharks": [[:]],
-    "Raptors": [[:]]
-]
-
-var  teamPracticeDates = [
-    "March 17, 1pm",
-    "March 17, 3pm",
-    "March 18, 1pm"
+var teams: [[String : NSObject]] = [
+    ["name": "Dragons", "practiceDate": "March 17, 1pm"],
+   ["name": "Sharks", "practiceDate": "March 17, 3pm"],
+   ["name": "Raptors", "practiceDate": "March 18, 1pm"]
 ]
 
 var maxPlayersByTeam = (players.count) / (teams.count)
 
-func loadPlayersInTeam(teamName: String)
+func loadPlayersInTeam(var team: [String: NSObject]) -> [String: NSObject]
 {
     // Create a temporal array to store player by team
-    var team = [[String:AnyObject]]()
+    var teamPlayers = [[String:AnyObject]]()
     var count = 0
     
     for i in 0..<maxPlayersByTeam {
         
         let player = players[i]
-        team.append(player as [String : AnyObject])
+        teamPlayers.append(player as [String : AnyObject])
         count += 1
 
         // if team is loaded assign it to team collection
         if (count == maxPlayersByTeam)
         {
-            teams[teamName] = team
+            team["players"] = teamPlayers
             count = 0;
         }
         
@@ -65,17 +59,41 @@ func loadPlayersInTeam(teamName: String)
             players.removeAtIndex(i)
         }
     }
+    
+    return team
 }
 
 func configureTeams()
 {
-    for (key, _) in teams {
-        loadPlayersInTeam(key)
-    }
+   for i in 0..<teams.count
+   {
+        let team = teams[i]
+        let newTeam = loadPlayersInTeam(team)
+        teams[i] = newTeam
+   }
 }
 
 configureTeams()
 
-print(teams["Dragons"])
-print(teams["Sharks"])
-print(teams["Raptors"])
+func printLetters()
+{
+    for team in teams
+    {
+        var letter: String = ""
+        letter += "---------------------------------------------------------------- \n"
+        letter = "Team name: \(team["name"]) \n \n"
+        let playersOfTheTeam = team["players"] as! NSArray
+        for player in playersOfTheTeam
+        {
+            letter += "player name: \(player["name"]) \n"
+        }
+        
+        letter += "Practice date: \(team["practiceDate"]) \n \n"
+        
+        letter += "---------------------------------------------------------------- \n"
+        
+        print(letter)
+    }
+}
+
+printLetters()
